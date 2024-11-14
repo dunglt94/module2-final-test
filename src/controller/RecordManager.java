@@ -7,6 +7,7 @@ import storage.RecordStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -60,13 +61,11 @@ public class RecordManager {
                     }
 
                     if (codeExists) {
-                        System.out.println("Bệnh án đã tồn tại!");
-                    }
-                    else {
+                        System.out.println("Bệnh án đã tồn tại!");;
+                    } else {
                         recordCodeMatch = true;
                         record.setRecordCode(recordCode);
                     }
-
                 } else {
                     System.out.println("Mã bệnh án chưa đúng mẫu. " +
                             "Phải nhập đúng định dạng BA-XXX với XXX là các kí tự số");
@@ -75,11 +74,11 @@ public class RecordManager {
 
             boolean patientCodeMatch = false;
             while (!patientCodeMatch) {
-                Pattern patientCodePattern = Pattern.compile("^BN-[0-9]{3}$");
-                Matcher matcher = patientCodePattern.matcher(recordCode);
-
                 System.out.print("Nhập mã bệnh nhân: ");
                 String patientCode = scanner.nextLine();
+
+                Pattern patientCodePattern = Pattern.compile("^BN-[0-9]{3}$");
+                Matcher matcher = patientCodePattern.matcher(patientCode);
 
                 if (matcher.matches()) {
                     patientCodeMatch = true;
@@ -96,15 +95,37 @@ public class RecordManager {
             record.setName(patientName);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            System.out.print("Nhập ngày nhập viện (dd/MM/yyyy): ");
-            String dateString1 = scanner.nextLine();
-            LocalDate dateOfAdmission = LocalDate.parse(dateString1, formatter);
-            record.setDateOfAdmission(dateOfAdmission);
+            while (true) {
+                try {
+                    System.out.print("Nhập ngày nhập viện (dd/MM/yyyy): ");
+                    String dateString1 = scanner.nextLine();
+                    LocalDate dateOfAdmission = LocalDate.parse(dateString1, formatter);
+                    record.setDateOfAdmission(dateOfAdmission);
+                    break; // Break the loop if parsing is successful
+                } catch (DateTimeParseException e) {
+                    System.out.println("Định dạng ngày không hợp lệ. Vui lòng nhập lại.");
+                }
+            }
 
-            System.out.print("Nhập xuất nhập viện (dd/MM/yyyy): ");
-            String dateString2 = scanner.nextLine();
-            LocalDate dischargeDate = LocalDate.parse(dateString2, formatter);
-            record.setDischargeDate(dischargeDate);
+            boolean isValidDate = false;
+            while (!isValidDate) {
+                try {
+                    System.out.print("Nhập ngày xuất viện (dd/MM/yyyy): ");
+                    String dateString2 = scanner.nextLine();
+                    LocalDate dischargeDate = LocalDate.parse(dateString2, formatter);
+
+                    if (dischargeDate.isAfter(record.getDateOfAdmission())
+                            || dischargeDate.isEqual(record.getDateOfAdmission())) {
+                        record.setDischargeDate(dischargeDate);
+                        isValidDate = true;
+                    } else {
+                        System.out.println("Ngày xuất viện không được là ngày trước ngày nhập viện.");
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Định dạng ngày không hợp lệ. Vui lòng nhập lại.");
+                }
+            }
+
 
             System.out.println("Lý do nhập viện:");
             String reason = scanner.nextLine();

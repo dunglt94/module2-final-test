@@ -124,6 +124,7 @@ public class RecordStorage implements IRecordStorage{
             try {
                 record = new BenhAnVIP(recordCode, patientCode, name, dateOfAdmission,
                         dischargeDate, reason, patientType);
+                record.setId(id);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -131,6 +132,7 @@ public class RecordStorage implements IRecordStorage{
             try {
                 record = new BenhAnThuong(recordCode, patientCode, name, dateOfAdmission,
                         dischargeDate, reason, Double.parseDouble(patientType));
+                record.setId(id);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
