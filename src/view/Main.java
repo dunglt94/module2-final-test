@@ -5,7 +5,7 @@ import controller.RecordManager;
 import java.util.Scanner;
 
 public class Main {
-    private static final RecordManager drinkManager = new RecordManager();
+    private static final RecordManager recordManager = new RecordManager();
     public static void main(String[] args) {
         while (true) {
             System.out.println("--CHƯƠNG TRÌNH QUẢN LÝ BỆNH ÁN--");
@@ -21,13 +21,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    drinkManager.add();
+                    recordManager.add();
                     break;
                 case 2:
-                    drinkManager.delete();
+                    recordManager.delete();
                     break;
                 case 3:
-                    drinkManager.showRecords();
+                    recordManager.showRecords();
                     break;
                 case 4:
                     System.out.println("Thoát chương trình!");

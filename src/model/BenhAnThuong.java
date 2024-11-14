@@ -14,8 +14,8 @@ public class BenhAnThuong extends BenhAn{
         this.fee = fee;
     }
 
-    public BenhAnThuong(String recordCode, String patientCode, String name, double fee,
-                        LocalDate dateOfAdmission, LocalDate dischargeDate, String reason) {
+    public BenhAnThuong(String recordCode, String patientCode, String name,
+                        LocalDate dateOfAdmission, LocalDate dischargeDate, String reason, double fee) {
         super(recordCode, patientCode, name, dateOfAdmission, dischargeDate, reason);
         this.fee = fee;
     }

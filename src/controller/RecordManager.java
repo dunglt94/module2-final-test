@@ -68,13 +68,30 @@ public class RecordManager {
                 double fee = scanner.nextDouble();
                 scanner.nextLine();
                 ((BenhAnThuong) record).setFee(fee);
-            } else if (record instanceof BenhAnVIP) {
-                System.out.println("Nhập loại VIP: ");
-                String vipType = scanner.nextLine();
+            } else {
+                System.out.println("Chọn loại VIP: ");
+                System.out.println("1. VIP I");
+                System.out.println("2. VIP II");
+                System.out.println("3. VIP III");
+                System.out.print("Chọn: ");
+                int VIPChoice = scanner.nextInt();
+                String vipType = "";
+                switch (VIPChoice) {
+                    case 1:
+                        vipType = "VIP I";
+                        break;
+                    case 2:
+                        vipType = "VIP II";
+                        break;
+                    case 3:
+                        vipType = "VIP III";
+                        break;
+                    default:
+                        System.out.println("Nhập số tương ứng với loại VIP");
+                }
                 ((BenhAnVIP) record).setVIPPackage(vipType);
             }
         }
-
         records.add(record);
         recordStorage.writeRecord(records);
     }

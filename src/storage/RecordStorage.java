@@ -1,8 +1,7 @@
 package storage;
 
 import model.BenhAn;
-import model.BenhAnThuong;
-import model.BenhAnVIP;
+import model.BenhAnThuong;import model.BenhAnVIP;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -30,15 +29,14 @@ public class RecordStorage implements IRecordStorage{
 
     @Override
     public void writeRecord(List<BenhAn> records) {
-        File file = new File("data/drinks.csv");
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_RECORDS_CSV));
 
             writer.write(FILE_HEADER);
             writer.newLine();
 
             for (BenhAn record : records) {
-                writer.write(record.getId());
+                writer.write(String.valueOf(record.getId()));
                 writer.write(COMMA_DELIMITER);
                 writer.write(record.getRecordCode());
                 writer.write(COMMA_DELIMITER);
@@ -120,33 +118,19 @@ public class RecordStorage implements IRecordStorage{
         String patientType = column[7];
 
         BenhAn record = null;
-        if (Double.isNaN(Double.parseDouble(patientType))) {
-            record = new BenhAnThuong();
-            try {
-                record.setId(id);
-                record.setRecordCode(recordCode);
-                record.setPatientCode(patientCode);
-                record.setName(name);
-                record.setDateOfAdmission(dateOfAdmission);
-                record.setDischargeDate(dischargeDate);
-                record.setReason(reason);
-                ((BenhAnThuong) record).setFee(Double.parseDouble(patientType));
 
+        String[] patientTypeArray = patientType.split(" ");
+        if (patientTypeArray[0].equals("VIP")) {
+            try {
+                record = new BenhAnVIP(recordCode, patientCode, name, dateOfAdmission,
+                        dischargeDate, reason, patientType);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         } else {
-            record = new BenhAnVIP();
             try {
-                record.setId(id);
-                record.setRecordCode(recordCode);
-                record.setPatientCode(patientCode);
-                record.setName(name);
-                record.setDateOfAdmission(dateOfAdmission);
-                record.setDischargeDate(dischargeDate);
-                record.setReason(reason);
-                ((BenhAnVIP) record).setVIPPackage(patientType);
-
+                record = new BenhAnThuong(recordCode, patientCode, name, dateOfAdmission,
+                        dischargeDate, reason, Double.parseDouble(patientType));
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
