@@ -96,8 +96,8 @@ public abstract class BenhAn {
     @Override
     public String toString() {
         return "STT: " + id +
-                ", Mã bệnh án:" + recordCode +
-                ", mã bệnh nhân" + patientCode +
+                ", Mã bệnh án: " + recordCode +
+                ", mã bệnh nhân: " + patientCode +
                 ", Tên bệnh nhân: " + name +
                 ", ngày nhập viện: " + dateOfAdmission.format(DATE_FORMATTER) +
                 ", ngày xuất viện: " + dischargeDate.format(DATE_FORMATTER) +

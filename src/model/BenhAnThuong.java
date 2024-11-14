@@ -32,11 +32,11 @@ public class BenhAnThuong extends BenhAn{
     public String toString() {
         return "STT: " + super.getId() +
                 ", mã bệnh án:" + super.getRecordCode() +
-                ", mã bệnh nhân" + super.getPatientCode() +
+                ", mã bệnh nhân: " + super.getPatientCode() +
                 ", tên bệnh nhân: " + super.getName() +
                 ", ngày nhập viện: " + super.getDateOfAdmission() +
                 ", ngày xuất viện: " + super.getDischargeDate() +
                 ", lý do nhập việm: " + super.getReason() +
-                ", phí nhập viện" + this.getFee() + " VND";
+                ", phí nhập viện: " + this.getFee() + " VND";
     }
 }

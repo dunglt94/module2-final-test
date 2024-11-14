@@ -45,8 +45,8 @@ public class BenhAnVIP extends BenhAn{
     @Override
     public String toString() {
         return "STT: " + super.getId() +
-                ", mã bệnh án:" + super.getRecordCode() +
-                ", mã bệnh nhân" + super.getPatientCode() +
+                ", mã bệnh án: " + super.getRecordCode() +
+                ", mã bệnh nhân: " + super.getPatientCode() +
                 ", tên bệnh nhân: " + super.getName() +
                 ", ngày nhập viện: " + super.getDateOfAdmission() +
                 ", ngày xuất viện: " + super.getDischargeDate() +
