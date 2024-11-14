@@ -40,12 +40,10 @@ public class RecordManager {
         }
 
         if (record != null) {
-
             boolean recordCodeMatch = false;
-            String recordCode = "";
             while (!recordCodeMatch) {
                 System.out.print("Nhập mã bệnh án (BA-XXX): ");
-                recordCode = scanner.nextLine();
+                String recordCode = scanner.nextLine();
 
                 Pattern recordCodePattern = Pattern.compile("^BA-[0-9]{3}$");
                 Matcher matcher = recordCodePattern.matcher(recordCode);
@@ -61,7 +59,7 @@ public class RecordManager {
                     }
 
                     if (codeExists) {
-                        System.out.println("Bệnh án đã tồn tại!");;
+                        System.out.println("Bệnh án đã tồn tại!");
                     } else {
                         recordCodeMatch = true;
                         record.setRecordCode(recordCode);
@@ -165,22 +163,61 @@ public class RecordManager {
         recordStorage.writeRecord(records);
     }
 
-
-
-
-
-
     public void delete() {
-        System.out.println("Nhập mã bệnh án muốn xoá");
         Scanner scanner = new Scanner(System.in);
-        String recordCode = scanner.nextLine();
-        for (BenhAn record : records) {
-            if (record.getRecordCode().equals(recordCode)) {
-                records.remove(record);
+        while (true) {
+            System.out.print("Nhập mã bệnh án muốn xoá (BA-XXX): ");
+            String recordCode = scanner.nextLine();
+
+            Pattern recordCodePattern = Pattern.compile("^BA-[0-9]{3}$");
+            Matcher matcher = recordCodePattern.matcher(recordCode);
+
+            if (matcher.matches()) {
+                BenhAn recordToRemove = null;
+                for (BenhAn record2 : records) {
+                    if (record2.getRecordCode().equals(recordCode)) {
+                        recordToRemove = record2;
+                        break;
+                    }
+                }
+
+                if (recordToRemove != null) {
+                    while (true) {
+                        System.out.println("Xác nhận xoá?");
+                        System.out.println("1. Yes");
+                        System.out.println("2. No");
+                        System.out.print("Chọn: ");
+                        int choice = scanner.nextInt();
+                        scanner.nextLine();
+
+                        switch (choice) {
+                            case 1:
+                                System.out.println("Đã xoá bệnh án " + recordToRemove.getRecordCode());
+                                records.remove(recordToRemove);
+                                recordStorage.writeRecord(records);
+                                showRecords();
+                                break;
+                            case 2:
+                                System.out.println("Quay về menu chính");
+                                break;
+                            default:
+                                System.out.println("Nhập số tương ứng với lựa chọn");
+                        }
+
+                        if (choice == 1 || choice == 2) {
+                            break;
+                        }
+                    }
+                } else {
+                    System.out.println("Không tìm thấy bênh án " + recordCode);
+                }
                 break;
+            } else {
+                System.out.println("Mã bệnh án chưa đúng mẫu. " +
+                        "Phải nhập đúng định dạng BA-XXX với XXX là các kí tự số");
             }
         }
-        recordStorage.writeRecord(records);
+
     }
 
     public void showRecords() {
