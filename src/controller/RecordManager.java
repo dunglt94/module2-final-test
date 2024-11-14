@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RecordManager {
     static RecordStorage recordStorage = RecordStorage.getInstance();
@@ -37,13 +39,57 @@ public class RecordManager {
         }
 
         if (record != null) {
-            System.out.print("Nhập mã bệnh án: ");
-            String recordCode = scanner.nextLine();
-            record.setRecordCode(recordCode);
 
-            System.out.print("Nhập mã bệnh nhân: ");
-            String patientCode = scanner.nextLine();
-            record.setPatientCode(patientCode);
+            boolean recordCodeMatch = false;
+            String recordCode = "";
+            while (!recordCodeMatch) {
+                System.out.print("Nhập mã bệnh án (BA-XXX): ");
+                recordCode = scanner.nextLine();
+
+                Pattern recordCodePattern = Pattern.compile("^BA-[0-9]{3}$");
+                Matcher matcher = recordCodePattern.matcher(recordCode);
+
+                if (matcher.matches()) {
+                    boolean codeExists = false;
+
+                    for (BenhAn record2 : records) {
+                        if (record2.getRecordCode().equals(recordCode)) {
+                            codeExists = true;
+                            break;
+                        }
+                    }
+
+                    if (codeExists) {
+                        System.out.println("Bệnh án đã tồn tại!");
+                    }
+                    else {
+                        recordCodeMatch = true;
+                        record.setRecordCode(recordCode);
+                    }
+
+                } else {
+                    System.out.println("Mã bệnh án chưa đúng mẫu. " +
+                            "Phải nhập đúng định dạng BA-XXX với XXX là các kí tự số");
+                }
+            }
+
+            boolean patientCodeMatch = false;
+            while (!patientCodeMatch) {
+                Pattern patientCodePattern = Pattern.compile("^BN-[0-9]{3}$");
+                Matcher matcher = patientCodePattern.matcher(recordCode);
+
+                System.out.print("Nhập mã bệnh nhân: ");
+                String patientCode = scanner.nextLine();
+
+                if (matcher.matches()) {
+                    patientCodeMatch = true;
+                    record.setPatientCode(patientCode);
+                } else {
+                    System.out.println("Mã bệnh nhân chưa đúng mẫu. " +
+                            "Phải nhập đúng định dạng BN-XXX với XXX là các kí tự số");
+                }
+            }
+
 
             System.out.print("Nhập tên bệnh nhân: ");
             String patientName = scanner.nextLine();
@@ -54,6 +100,7 @@ public class RecordManager {
             String dateString1 = scanner.nextLine();
             LocalDate dateOfAdmission = LocalDate.parse(dateString1, formatter);
             record.setDateOfAdmission(dateOfAdmission);
+
             System.out.print("Nhập xuất nhập viện (dd/MM/yyyy): ");
             String dateString2 = scanner.nextLine();
             LocalDate dischargeDate = LocalDate.parse(dateString2, formatter);
@@ -93,6 +140,7 @@ public class RecordManager {
             }
         }
         records.add(record);
+        System.out.println("Đã thêm bệnh án vào file!");
         recordStorage.writeRecord(records);
     }
 
