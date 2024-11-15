@@ -1,7 +1,7 @@
 package storage;
 
-import model.BenhAn;
-import model.BenhAnThuong;import model.BenhAnVIP;
+import model.Record;
+import model.NormalRecord;import model.VIPRecord;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ public class RecordStorage implements IRecordStorage{
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final String COMMA_DELIMITER = ",";
     private static final String DATA_RECORDS_CSV = "data/medical_records.csv";
-    private static final String FILE_HEADER = "STT,mã bệnh án,name,mã bệnh nhân,tên bệnh nhân,ngày nhập viện," +
+    private static final String FILE_HEADER = "STT,mã bệnh án,mã bệnh nhân,tên bệnh nhân,ngày nhập viện," +
             "ngày xuất viện,lý do nhập việm,Loại bênh nhân";
 
     private RecordStorage() {}
@@ -28,14 +28,14 @@ public class RecordStorage implements IRecordStorage{
     }
 
     @Override
-    public void writeRecord(List<BenhAn> records) {
+    public void writeRecord(List<Record> records) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_RECORDS_CSV));
 
             writer.write(FILE_HEADER);
             writer.newLine();
 
-            for (BenhAn record : records) {
+            for (Record record : records) {
                 writer.write(String.valueOf(record.getId()));
                 writer.write(COMMA_DELIMITER);
                 writer.write(record.getRecordCode());
@@ -49,14 +49,13 @@ public class RecordStorage implements IRecordStorage{
                 writer.write(record.getDischargeDate().format(DATE_FORMATTER));
                 writer.write(COMMA_DELIMITER);
                 writer.write(record.getReason());
-                if (record instanceof BenhAnThuong) {
+                if (record instanceof NormalRecord) {
                     writer.write(COMMA_DELIMITER);
-                    writer.write(Double.toString(((BenhAnThuong) record).getFee()));
-                } else if (record instanceof BenhAnVIP) {
+                    writer.write(Double.toString(((NormalRecord) record).getFee()));
+                } else if (record instanceof VIPRecord) {
                     writer.write(COMMA_DELIMITER);
-                    writer.write(((BenhAnVIP) record).getVIPPackage());
+                    writer.write(((VIPRecord) record).getVIPPackage());
                 }
-
                 writer.newLine();
             }
 
@@ -73,8 +72,8 @@ public class RecordStorage implements IRecordStorage{
     }
 
     @Override
-    public List<BenhAn> readRecord() {
-        List<BenhAn> records = new ArrayList<>();
+    public List<Record> readRecord() {
+        List<Record> records = new ArrayList<>();
         File file = new File(DATA_RECORDS_CSV);
 
         try {
@@ -85,7 +84,7 @@ public class RecordStorage implements IRecordStorage{
                 counter++;
                 String[] column = line.split(COMMA_DELIMITER);
                 if (counter == 1) continue;
-                BenhAn record = getRecord(column);
+                Record record = getRecord(column);
                 records.add(record);
             }
             reader.close();
@@ -93,12 +92,14 @@ public class RecordStorage implements IRecordStorage{
             System.out.println("Error while reading CSV file !!!");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
+        } finally {
+            Record.setCounter(records.getLast().getId());
         }
 
         return records;
     }
 
-    private static BenhAn getRecord(String[] column) {
+    private static Record getRecord(String[] column) {
         int id = Integer.parseInt(column[0]);
         String recordCode = column[1];
         String patientCode = column[2];
@@ -117,12 +118,11 @@ public class RecordStorage implements IRecordStorage{
         String reason = column[6];
         String patientType = column[7];
 
-        BenhAn record = null;
-
+        Record record = null;
         String[] patientTypeArray = patientType.split(" ");
         if (patientTypeArray[0].equals("VIP")) {
             try {
-                record = new BenhAnVIP(recordCode, patientCode, name, dateOfAdmission,
+                record = new VIPRecord(recordCode, patientCode, name, dateOfAdmission,
                         dischargeDate, reason, patientType);
                 record.setId(id);
             } catch (Exception e) {
@@ -130,7 +130,7 @@ public class RecordStorage implements IRecordStorage{
             }
         } else {
             try {
-                record = new BenhAnThuong(recordCode, patientCode, name, dateOfAdmission,
+                record = new NormalRecord(recordCode, patientCode, name, dateOfAdmission,
                         dischargeDate, reason, Double.parseDouble(patientType));
                 record.setId(id);
             } catch (Exception e) {

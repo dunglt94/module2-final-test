@@ -1,13 +1,14 @@
 package controller;
 
-import model.BenhAn;
-import model.BenhAnThuong;
-import model.BenhAnVIP;
+import model.Record;
+import model.NormalRecord;
+import model.VIPRecord;
 import storage.RecordStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class RecordManager {
     static RecordStorage recordStorage = RecordStorage.getInstance();
-    public static List<BenhAn> records = recordStorage.readRecord();
+    public static List<Record> records = recordStorage.readRecord();
 
     public void add() {
         System.out.println("1. Bệnh nhân thường");
@@ -26,14 +27,14 @@ public class RecordManager {
         int choice = scanner.nextInt();
         scanner.nextLine();
 
-        BenhAn record = null;
+        Record record = null;
 
         switch (choice) {
             case 1:
-                record = new BenhAnThuong();
+                record = new NormalRecord();
                 break;
             case 2:
-                record = new BenhAnVIP();
+                record = new VIPRecord();
                 break;
             default:
                 System.out.println("Hãy nhập số tương ứng với loại bệnh nhân");
@@ -51,7 +52,7 @@ public class RecordManager {
                 if (matcher.matches()) {
                     boolean codeExists = false;
 
-                    for (BenhAn record2 : records) {
+                    for (Record record2 : records) {
                         if (record2.getRecordCode().equals(recordCode)) {
                             codeExists = true;
                             break;
@@ -125,15 +126,24 @@ public class RecordManager {
             }
 
 
-            System.out.println("Lý do nhập viện:");
+            System.out.print("Lý do nhập viện: ");
             String reason = scanner.nextLine();
             record.setReason(reason);
 
-            if (record instanceof BenhAnThuong) {
-                System.out.print("Nhập phí nằm viện: ");
-                double fee = scanner.nextDouble();
-                scanner.nextLine();
-                ((BenhAnThuong) record).setFee(fee);
+            if (record instanceof NormalRecord) {
+                while (true) {
+                    try{
+                        System.out.print("Nhập phí nằm viện: ");
+                        String feeInput = scanner.nextLine();
+                        feeInput = feeInput.replace(".", "");
+                        double fee = Double.parseDouble(feeInput);
+                        ((NormalRecord) record).setFee(fee);
+                        break;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Định dạng số không hợp lệ!");
+                    }
+                }
+
             } else {
                 System.out.println("Chọn loại VIP: ");
                 System.out.println("1. VIP I");
@@ -155,7 +165,7 @@ public class RecordManager {
                     default:
                         System.out.println("Nhập số tương ứng với loại VIP");
                 }
-                ((BenhAnVIP) record).setVIPPackage(vipType);
+                ((VIPRecord) record).setVIPPackage(vipType);
             }
         }
         records.add(record);
@@ -173,8 +183,8 @@ public class RecordManager {
             Matcher matcher = recordCodePattern.matcher(recordCode);
 
             if (matcher.matches()) {
-                BenhAn recordToRemove = null;
-                for (BenhAn record2 : records) {
+                Record recordToRemove = null;
+                for (Record record2 : records) {
                     if (record2.getRecordCode().equals(recordCode)) {
                         recordToRemove = record2;
                         break;
@@ -193,6 +203,12 @@ public class RecordManager {
                         switch (choice) {
                             case 1:
                                 System.out.println("Đã xoá bệnh án " + recordToRemove.getRecordCode());
+                                for (Record record2 : records) {
+                                    if (record2.getId() > recordToRemove.getId()) {
+                                        int i = record2.getId();
+                                        record2.setId(--i);
+                                    }
+                                }
                                 records.remove(recordToRemove);
                                 recordStorage.writeRecord(records);
                                 showRecords();
@@ -221,11 +237,11 @@ public class RecordManager {
     }
 
     public void showRecords() {
-        List<BenhAn> records = recordStorage.readRecord();
+        List<Record> records = recordStorage.readRecord();
         if (records.isEmpty()) {
             System.out.println("Không có bệnh án nào!");
         } else {
-            for (BenhAn record : records) {
+            for (Record record : records) {
                 System.out.println(record);
             }
         }

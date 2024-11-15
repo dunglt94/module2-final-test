@@ -14,10 +14,19 @@ public class Main {
             System.out.println("3. Xem danh sách các bệnh án");
             System.out.println("4. Thoát");
 
-            System.out.print("Chọn chức năng: ");
-            Scanner scanner = new Scanner(System.in);
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            int choice;
+            while (true) {
+                try {
+                    System.out.print("Chọn chức năng: ");
+                    Scanner scanner = new Scanner(System.in);
+                    choice = scanner.nextInt();
+                    scanner.nextLine();
+                    break;
+                } catch (Exception e) {
+                    System.out.println("Hãy nhập số");
+                }
+
+            }
 
             switch (choice) {
                 case 1:

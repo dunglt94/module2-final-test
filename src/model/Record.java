@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public abstract class BenhAn {
+public abstract class Record {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static int counter = 0;
@@ -15,11 +15,11 @@ public abstract class BenhAn {
     private LocalDate dischargeDate;
     private String reason;
 
-    public BenhAn() {
+    public Record() {
         this.id = ++counter;
     }
 
-    public BenhAn(String recordCode, String patientCode, String name, LocalDate dateOfAdmission, LocalDate dischargeDate, String reason) {
+    public Record(String recordCode, String patientCode, String name, LocalDate dateOfAdmission, LocalDate dischargeDate, String reason) {
         this.id = ++counter;
         this.recordCode = recordCode;
         this.patientCode = patientCode;
@@ -34,7 +34,7 @@ public abstract class BenhAn {
     }
 
     public static void setCounter(int counter) {
-        BenhAn.counter = counter;
+        Record.counter = counter;
     }
 
     public int getId() {

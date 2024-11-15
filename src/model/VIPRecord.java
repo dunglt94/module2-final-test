@@ -2,25 +2,25 @@ package model;
 
 import java.time.LocalDate;
 
-public class BenhAnVIP extends BenhAn{
+public class VIPRecord extends Record {
     private String VIPPackage;
     private int VIPDuration;
 
-    public BenhAnVIP() {
+    public VIPRecord() {
         super();
     }
 
-    public BenhAnVIP(String VIPPackage) {
+    public VIPRecord(String VIPPackage) {
         super();
         this.VIPPackage = VIPPackage;
     }
 
-    public BenhAnVIP(String recordCode, String patientCode, String name, LocalDate dateOfAdmission,
+    public VIPRecord(String recordCode, String patientCode, String name, LocalDate dateOfAdmission,
                      LocalDate dischargeDate, String reason) {
         super(recordCode, patientCode, name, dateOfAdmission, dischargeDate, reason);
     }
 
-    public BenhAnVIP(String recordCode, String patientCode, String name, LocalDate dateOfAdmission,
+    public VIPRecord(String recordCode, String patientCode, String name, LocalDate dateOfAdmission,
                      LocalDate dischargeDate, String reason, String VIPPackage) {
         super(recordCode, patientCode, name, dateOfAdmission, dischargeDate, reason);
         this.VIPPackage = VIPPackage;

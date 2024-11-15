@@ -2,19 +2,19 @@ package model;
 
 import java.time.LocalDate;
 
-public class BenhAnThuong extends BenhAn{
+public class NormalRecord extends Record {
     private double fee;
 
-    public BenhAnThuong() {
+    public NormalRecord() {
         super();
     }
 
-    public BenhAnThuong(double fee) {
+    public NormalRecord(double fee) {
         super();
         this.fee = fee;
     }
 
-    public BenhAnThuong(String recordCode, String patientCode, String name,
+    public NormalRecord(String recordCode, String patientCode, String name,
                         LocalDate dateOfAdmission, LocalDate dischargeDate, String reason, double fee) {
         super(recordCode, patientCode, name, dateOfAdmission, dischargeDate, reason);
         this.fee = fee;
@@ -31,7 +31,7 @@ public class BenhAnThuong extends BenhAn{
     @Override
     public String toString() {
         return "STT: " + super.getId() +
-                ", mã bệnh án:" + super.getRecordCode() +
+                ", mã bệnh án: " + super.getRecordCode() +
                 ", mã bệnh nhân: " + super.getPatientCode() +
                 ", tên bệnh nhân: " + super.getName() +
                 ", ngày nhập viện: " + super.getDateOfAdmission() +
